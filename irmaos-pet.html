@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Irmãos Pet — Sistema de Gestão</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito Sans',sans-serif;background:#f0f2f5;color:#1a1a2e;min-height:100vh}
+.app{max-width:680px;margin:0 auto;background:#fff;min-height:100vh}
+.topbar{background:#fff;border-bottom:1px solid #e5e7eb;padding:.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.logo-icon{width:36px;height:36px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;color:#0F6E56;font-size:20px}
+.logo-name{font-size:15px;font-weight:600;color:#1a1a2e}
+.logo-sub{font-size:11px;color:#6b7280}
+.nav{display:flex;gap:2px;background:#f9fafb;padding:.4rem 1rem;border-bottom:1px solid #e5e7eb;overflow-x:auto;position:sticky;top:65px;z-index:9}
+.nb{background:none;border:none;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px;transition:.15s;font-family:'Nunito Sans',sans-serif}
+.nb:hover{background:#fff;color:#1a1a2e}
+.nb.on{background:#fff;color:#0F6E56;border:1px solid #e5e7eb}
+.pg{display:none;padding:1.25rem}
+.pg.on{display:block}
+.kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.25rem}
+.kcard{background:#f9fafb;border-radius:8px;padding:.75rem}
+.klabel{font-size:11px;color:#6b7280;margin-bottom:3px}
+.kval{font-size:20px;font-weight:600;color:#1a1a2e}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1rem 1.25rem;margin-bottom:.75rem}
+.row{display:flex;align-items:center;gap:10px;padding:.65rem 0;border-bottom:1px solid #f3f4f6}
+.row:last-child{border-bottom:none;padding-bottom:0}
+.row:first-child{padding-top:0}
+.av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.inf{flex:1;min-width:0}
+.nm{font-size:13px;font-weight:600;color:#1a1a2e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mt{font-size:11px;color:#6b7280;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.badge{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.bok{background:#E1F5EE;color:#085041}
+.bwarn{background:#FAEEDA;color:#633806}
+.bdanger{background:#FCEBEB;color:#501313}
+.binfo{background:#E6F1FB;color:#0C447C}
+.btn{background:#fff;border:1px solid #d1d5db;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;color:#1a1a2e;display:inline-flex;align-items:center;gap:6px;transition:.15s;font-family:'Nunito Sans',sans-serif}
+.btn:hover{background:#f9fafb}
+.btng{background:#0F6E56;border-color:#0F6E56;color:#fff}
+.btng:hover{background:#085041}
+.btnw{background:#25D366;border-color:#25D366;color:#fff}
+.btnw:hover{background:#1da851}
+.btnr{background:#fff;border:1px solid #fca5a5;color:#991b1b;font-size:12px;padding:5px 10px}
+.btnr:hover{background:#fef2f2}
+.sec{font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between}
+.alert{background:#FAEEDA;border:1px solid #F59E0B;border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;font-size:12px;color:#78350F;line-height:1.6;display:flex;gap:8px;align-items:flex-start}
+.mbg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);align-items:flex-start;justify-content:center;padding:1.5rem;z-index:100;overflow-y:auto}
+.mbg.on{display:flex}
+.modal{background:#fff;border-radius:12px;padding:1.25rem;width:100%;max-width:420px;margin-top:2rem}
+.mtitle{font-size:15px;font-weight:600;color:#1a1a2e;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
+.fl{margin-bottom:.75rem}
+.fl label{font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px}
+.fl input,.fl select,.fl textarea{width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;font-family:'Nunito Sans',sans-serif;background:#fff;color:#1a1a2e;outline:none;transition:.15s}
+.fl input:focus,.fl select:focus,.fl textarea:focus{border-color:#0F6E56;box-shadow:0 0 0 3px rgba(15,110,86,.1)}
+.fl textarea{resize:vertical}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toast{background:#0F6E56;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;display:none;align-items:center;gap:8px;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.empty{text-align:center;padding:2.5rem;color:#9ca3af;font-size:13px}
+.tab{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer;color:#6b7280;font-family:'Nunito Sans',sans-serif;transition:.15s}
+.tab.on{background:#0F6E56;border-color:#0F6E56;color:#fff}
+@media(max-width:480px){.kgrid{grid-template-columns:repeat(2,1fr)}.f2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<div id="toast" class="toast">✓ <span id="tmsg">Salvo!</span></div>
+
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="logo-icon">🐾</div>
+    <div>
+      <div class="logo-name">Irmãos Pet</div>
+      <div class="logo-sub">Av. Rio de Janeiro, 5225 · Ag. de Carvalho · Porto Velho, RO</div>
+    </div>
+  </div>
+  <button class="btn btng" onclick="openModal('m-pet')">+ Novo pet</button>
+</div>
+
+<div class="nav">
+  <button class="nb on" onclick="go('dash',this)">🏠 Início</button>
+  <button class="nb" onclick="go('pets',this)">🐾 Pets</button>
+  <button class="nb" onclick="go('agenda',this)">📅 Agenda</button>
+  <button class="nb" onclick="go('vacc',this)">💉 Vacinas</button>
+  <button class="nb" onclick="go('hist',this)">📋 Histórico</button>
+  <button class="nb" onclick="go('cfg',this)">⚙️ Config</button>
+</div>
+
+<div id="dash" class="pg on">
+  <div class="kgrid" id="kpis"></div>
+  <div id="dalerts"></div>
+  <div class="sec">Agenda de hoje</div>
+  <div class="card" id="dagenda"></div>
+</div>
+
+<div id="pets" class="pg">
+  <div class="sec">
+    <span id="pcount">Pets</span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input type="text" id="psearch" placeholder="Buscar..." style="width:150px;padding:7px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:12px;font-family:'Nunito Sans',sans-serif" oninput="renderPets()">
+      <button class="btn btng" onclick="openModal('m-pet')">+ Cadastrar</button>
+    </div>
+  </div>
+  <div class="card" id="plist"></div>
+</div>
+
+<div id="agenda" class="pg">
+  <div class="sec"><span>Agenda</span><button class="btn btng" onclick="openModal('m-ag')">+ Agendar</button></div>
+  <div id="aglist"></div>
+</div>
+
+<div id="vacc" class="pg">
+  <div id="valert"></div>
+  <div class="sec"><span>Vacinas</span><button class="btn btng" onclick="openModal('m-vacc')">+ Registrar</button></div>
+  <div class="card" id="vlist"></div>
+</div>
+
+<div id="hist" class="pg">
+  <div class="sec">Histórico</div>
+  <div style="display:flex;gap:6px;margin-bottom:.75rem">
+    <button class="tab on" onclick="setHT('all',this)">Todos</button>
+    <button class="tab" onclick="setHT('banho',this)">Banho/tosa</button>
+    <button class="tab" onclick="setHT('vacc',this)">Vacinas</button>
+  </div>
+  <div id="hlist"></div>
+</div>
+
+<div id="cfg" class="pg">
+  <div class="sec">Configurações</div>
+  <div class="card">
+    <div class="fl"><label>Nome do pet shop</label><input type="text" id="cfg-name"></div>
+    <div class="fl"><label>WhatsApp do pet shop</label><input type="text" id="cfg-wpp"></div>
+    <div class="fl"><label>Mensagem de lembrete de vacina<br><small style="font-weight:400;color:#9ca3af">Use: {dono}, {pet}, {vacina}, {dias}</small></label>
+      <textarea id="cfg-msg" rows="5"></textarea>
+    </div>
+    <button class="btn btng" onclick="saveCfg()">💾 Salvar configurações</button>
+  </div>
+  <div class="card">
+    <div style="font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:.4rem">⚠️ Zona de perigo</div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:.75rem">Apagar todos os dados cadastrados no sistema</div>
+    <button class="btn btnr" onclick="if(confirm('Tem certeza? Esta ação é irreversível.')){{localStorage.clear();location.reload()}}">Apagar todos os dados</button>
+  </div>
+</div>
+
+<!-- Modal Pet -->
+<div id="m-pet" class="mbg">
+  <div class="modal">
+    <div class="mtitle"><span id="mpet-title">Cadastrar pet</span><button class="btn" onclick="closeModal('m-pet')" style="padding:4px 10px;font-size:18px;border:none">×</button></div>
+    <input type="hidden" id="mpet-id">
+    <div class="f2">
+      <div class="fl"><label>Nome do pet *</label><input type="text" id="mpet-name" placeholder="Thor"></div>
+      <div class="fl"><label>Raça</label><input type="text" id="mpet-raca" placeholder="Golden Retriever"></div>
+    </div>
+    <div class="f2">
+      <div class="fl"><label>Espécie</label><select id="mpet-esp"><option value="cachorro">🐕 Cachorro</option><option value="gato">🐈 Gato</option><option value="outro">🐾 Outro</option></select></div>
+      <div class="fl"><label>Idade (anos)</label><input type="number" id="mpet-idade" placeholder="3" min="0" max="30"></div>
+    </div>
+    <div class="fl"><label>Nome do dono *</label><input type="text" id="mpet-dono" placeholder="João Silva"></div>
+    <div class="fl"><label>WhatsApp do dono (só números)</label><input type="text" id="mpet-wpp" placeholder="69999999999"></div>
+    <div class="fl"><label>Observações</label><textarea id="mpet-obs" rows="2" placeholder="Alergias, comportamento, observações..."></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem">
+      <button class="btn" onclick="closeModal('m-pet')">Cancelar</button>
+      <button class="btn btng" onclick="savePet()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Agendamento -->
+<div id="m-ag" class="mbg">
+  <div class="modal">
+    <div class="mtitle"><span>Novo agendamento</span><button class="btn" onclick="closeModal('m-ag')" style="padding:4px 10px;font-size:18px;border:none">×</button></div>
+    <div class="fl"><label>Pet *</label><select id="mag-pet"></select></div>
+    <div class="f2">
+      <div class="fl"><label>Serviço *</label>
+        <select id="mag-tipo"><option>Banho e tosa</option><option>Banho</option><option>Tosa</option><option>Tosa higiênica</option><option>Consulta</option><option>Outro</option></select>
+      </div>
+      <div class="fl"><label>Valor (R$)</label><input type="number" id="mag-val" placeholder="80" min="0"></div>
+    </div>
+    <div class="f2">
+      <div class="fl"><label>Data *</label><input type="date" id="mag-data"></div>
+      <div class="fl"><label>Horário *</label><input type="time" id="mag-hora"></div>
+    </div>
+    <div class="fl"><label>Status</label>
+      <select id="mag-status"><option value="confirmado">✅ Confirmado</option><option value="aguardando">⏳ Aguardando</option><option value="concluido">✓ Concluído</option><option value="cancelado">✗ Cancelado</option></select>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem">
+      <button class="btn" onclick="closeModal('m-ag')">Cancelar</button>
+      <button class="btn btng" onclick="saveAg()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Vacina -->
+<div id="m-vacc" class="mbg">
+  <div class="modal">
+    <div class="mtitle"><span>Registrar vacina</span><button class="btn" onclick="closeModal('m-vacc')" style="padding:4px 10px;font-size:18px;border:none">×</button></div>
+    <div class="fl"><label>Pet *</label><select id="mv-pet"></select></div>
+    <div class="fl"><label>Vacina *</label>
+      <select id="mv-tipo"><option>Raiva</option><option>V8</option><option>V10</option><option>Giardia</option><option>Bordetella</option><option>Leishmaniose</option><option>Outro</option></select>
+    </div>
+    <div class="f2">
+      <div class="fl"><label>Data de aplicação</label><input type="date" id="mv-data"></div>
+      <div class="fl"><label>Validade (meses)</label><input type="number" id="mv-val" placeholder="12" min="1" max="36"></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem">
+      <button class="btn" onclick="closeModal('m-vacc')">Cancelar</button>
+      <button class="btn btng" onclick="saveVacc()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal WhatsApp -->
+<div id="m-wpp" class="mbg">
+  <div class="modal">
+    <div class="mtitle"><span>📲 Enviar lembrete</span><button class="btn" onclick="closeModal('m-wpp')" style="padding:4px 10px;font-size:18px;border:none">×</button></div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:.5rem">Mensagem que será enviada:</div>
+    <div id="wpp-preview" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:.75rem;font-size:13px;color:#1a1a2e;line-height:1.7;margin-bottom:.75rem;white-space:pre-wrap"></div>
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:1rem">O WhatsApp abrirá com essa mensagem pronta. Só clicar em enviar!</div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn" onclick="closeModal('m-wpp')">Cancelar</button>
+      <button class="btn btnw" onclick="doWpp()">💬 Abrir WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+var DB={load:function(k){try{return JSON.parse(localStorage.getItem('ip_'+k)||'null')}catch(e){return null}},save:function(k,v){localStorage.setItem('ip_'+k,JSON.stringify(v))}};
+var pets=DB.load('pets')||[];
+var ags=DB.load('ags')||[];
+var vaccs=DB.load('vaccs')||[];
+var cfg=DB.load('cfg')||{name:'Irmãos Pet',wpp:'5569993706019',msg:'Olá {dono}! 🐾\n\nA Irmãos Pet lembra que a vacina {vacina} do(a) {pet} vence em {dias} dias.\n\nAgende pelo nosso WhatsApp:\n📱 (69) 99370-6019\n\n📍 Av. Rio de Janeiro, 5225\nBairro Ag. de Carvalho\nPorto Velho - RO\n\nAté logo! 😊'};
+var currentWpp={};
+var ht='all';
+
+function today(){return new Date().toISOString().slice(0,10)}
+function uid(){return 'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
+function getPet(id){return pets.find(function(p){return p.id===id})||{name:'?',dono:'?',wpp:'',esp:'cachorro'}}
+function daysUntil(d,m){var e=new Date(d);e.setMonth(e.getMonth()+parseInt(m||12));return Math.round((e-new Date())/(864e5))}
+function fmtDate(d){var p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0]}
+function fmtMoney(v){return 'R$'+parseFloat(v||0).toFixed(2).replace('.',',')}
+function petAv(p){var c=p.esp==='gato'?'#DBEAFE':p.esp==='cachorro'?'#D1FAE5':'#EDE9FE';var t=p.esp==='gato'?'#1D4ED8':'#065F46';return '<div class="av" style="background:'+c+';color:'+t+'">'+p.name.slice(0,2).toUpperCase()+'</div>'}
+function vStatus(d){if(d<0)return{b:'bdanger',l:'Vencida ⚠️'};if(d<=7)return{b:'bdanger',l:'Vence em '+d+'d ⚠️'};if(d<=30)return{b:'bwarn',l:'Vence em '+d+'d'};return{b:'bok',l:'Em dia ✓'}}
+function agBadge(s){if(s==='confirmado')return{b:'bok',l:'✅ Confirmado'};if(s==='aguardando')return{b:'bwarn',l:'⏳ Aguardando'};if(s==='concluido')return{b:'binfo',l:'✓ Concluído'};return{b:'bdanger',l:'✗ Cancelado'}}
+function showToast(msg){var t=document.getElementById('toast');document.getElementById('tmsg').textContent=msg;t.style.display='flex';setTimeout(function(){t.style.display='none'},2500)}
+
+function go(id,btn){document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on')});document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('on')});document.getElementById(id).classList.add('on');btn.classList.add('on');if(id==='dash')renderDash();if(id==='pets')renderPets();if(id==='agenda')renderAg();if(id==='vacc')renderVacc();if(id==='hist')renderHist();if(id==='cfg')loadCfg()}
+function openModal(id){if(id==='m-ag'||id==='m-vacc')fillSel(id);document.getElementById(id).classList.add('on');document.body.style.overflow='hidden'}
+function closeModal(id){document.getElementById(id).classList.remove('on');document.body.style.overflow=''}
+function fillSel(mid){var sel=document.getElementById(mid==='m-ag'?'mag-pet':'mv-pet');if(!pets.length){sel.innerHTML='<option value="">Cadastre um pet primeiro</option>';return}sel.innerHTML=pets.map(function(p){return '<option value="'+p.id+'">'+p.name+' ('+p.dono+')</option>'}).join('')}
+
+function renderDash(){
+  var td=today(),tdAgs=ags.filter(function(a){return a.data===td}),urgV=vaccs.filter(function(v){return daysUntil(v.data,v.meses)<=7}),mAgs=ags.filter(function(a){return a.data.slice(0,7)===td.slice(0,7)}),rec=mAgs.reduce(function(s,a){return s+(parseFloat(a.val)||0)},0);
+  document.getElementById('kpis').innerHTML='<div class="kcard"><div class="klabel">🐾 Pets</div><div class="kval">'+pets.length+'</div></div><div class="kcard"><div class="klabel">📅 Hoje</div><div class="kval">'+tdAgs.length+'</div></div><div class="kcard"><div class="klabel" style="color:'+(urgV.length?'#92400E':'#6b7280')+'">💉 Vacinas</div><div class="kval" style="color:'+(urgV.length?'#D97706':'#1a1a2e')+'">'+urgV.length+'</div></div><div class="kcard"><div class="klabel">💰 Receita</div><div class="kval" style="font-size:14px">'+fmtMoney(rec)+'</div></div>';
+  document.getElementById('dalerts').innerHTML=urgV.length?'<div class="alert">⚠️ <div><strong>'+urgV.length+' vacina(s) vencem em breve:</strong> '+urgV.map(function(v){return getPet(v.petId).name+' ('+v.tipo+')'}).join(', ')+'. Acesse a aba Vacinas para enviar lembretes.</div></div>':'';
+  var html=!tdAgs.length?'<div class="empty">📅 Nenhum agendamento para hoje</div>':'';
+  tdAgs.sort(function(a,b){return a.hora.localeCompare(b.hora)}).forEach(function(a){var p=getPet(a.petId),b=agBadge(a.status);html+='<div class="row"><div style="font-size:13px;font-weight:600;color:#1a1a2e;min-width:46px">'+a.hora+'</div>'+petAv(p)+'<div class="inf"><div class="nm">'+a.tipo+' — '+p.name+'</div><div class="mt">'+p.dono+' · '+fmtMoney(a.val)+'</div></div><span class="badge '+b.b+'">'+b.l+'</span></div>'});
+  document.getElementById('dagenda').innerHTML=html;
+}
+
+function renderPets(){
+  var q=(document.getElementById('psearch').value||'').toLowerCase();
+  var list=pets.filter(function(p){return !q||p.name.toLowerCase().includes(q)||p.dono.toLowerCase().includes(q)||p.raca.toLowerCase().includes(q)});
+  document.getElementById('pcount').textContent=list.length+' pet'+(list.length!==1?'s':'')+' cadastrado'+(list.length!==1?'s':'');
+  if(!list.length){document.getElementById('plist').innerHTML='<div class="empty">'+(pets.length?'🔍 Nenhum resultado':'🐾 Nenhum pet cadastrado ainda')+'</div>';return}
+  var html='';
+  list.forEach(function(p){var pv=vaccs.filter(function(v){return v.petId===p.id}),md=pv.length?Math.min.apply(null,pv.map(function(v){return daysUntil(v.data,v.meses)})):999,bs=md<0?{b:'bdanger',l:'Vacina vencida'}:md<=30?{b:'bwarn',l:'Vacina em '+md+'d'}:{b:'bok',l:'Em dia ✓'};html+='<div class="row">'+petAv(p)+'<div class="inf"><div class="nm">'+p.name+(p.raca?' · <span style="font-weight:400;color:#6b7280">'+p.raca+'</span>':'')+'</div><div class="mt">'+p.dono+(p.wpp?' · ('+p.wpp.slice(0,2)+') '+p.wpp.slice(2,7)+'-'+p.wpp.slice(7):'')+(p.obs?' · '+p.obs.slice(0,30):'')+'</div></div><span class="badge '+bs.b+'" style="margin-right:6px">'+bs.l+'</span><button class="btn" onclick="editPet(\''+p.id+'\')" style="padding:5px 10px;font-size:12px">✏️</button><button class="btn btnr" onclick="delPet(\''+p.id+'\')" style="padding:5px 10px;margin-left:4px">🗑</button></div>'});
+  document.getElementById('plist').innerHTML=html;
+}
+
+function renderAg(){
+  if(!ags.length){document.getElementById('aglist').innerHTML='<div class="card"><div class="empty">📅 Nenhum agendamento</div></div>';return}
+  var sorted=ags.slice().sort(function(a,b){return (a.data+a.hora).localeCompare(b.data+b.hora)}),byDate={};
+  sorted.forEach(function(a){if(!byDate[a.data])byDate[a.data]=[];byDate[a.data].push(a)});
+  var html='';
+  Object.keys(byDate).forEach(function(d){html+='<div style="font-size:12px;font-weight:600;color:#6b7280;margin-bottom:.4rem;padding:0 .1rem">'+fmtDate(d)+(d===today()?' <span style="background:#D1FAE5;color:#065F46;font-size:10px;padding:2px 7px;border-radius:4px;margin-left:4px">HOJE</span>':'')+'</div><div class="card">';byDate[d].forEach(function(a){var p=getPet(a.petId),b=agBadge(a.status);html+='<div class="row"><div style="font-size:13px;font-weight:600;min-width:46px;color:#1a1a2e">'+a.hora+'</div>'+petAv(p)+'<div class="inf"><div class="nm">'+a.tipo+' — '+p.name+'</div><div class="mt">'+p.dono+' · '+fmtMoney(a.val)+'</div></div><span class="badge '+b.b+'" style="margin-right:6px">'+b.l+'</span><button class="btn btnr" onclick="delAg(\''+a.id+'\')" style="padding:5px 10px">🗑</button></div>'});html+='</div>'});
+  document.getElementById('aglist').innerHTML=html;
+}
+
+function renderVacc(){
+  var urgent=vaccs.filter(function(v){return daysUntil(v.data,v.meses)<=7});
+  document.getElementById('valert').innerHTML=urgent.length?'<div class="alert">⚠️ <div><strong>'+urgent.length+' vacina(s) vencem em 7 dias.</strong> Clique no botão 💬 para avisar os donos pelo WhatsApp.</div></div>':'';
+  if(!vaccs.length){document.getElementById('vlist').innerHTML='<div class="empty">💉 Nenhuma vacina registrada</div>';return}
+  var sorted=vaccs.slice().sort(function(a,b){return daysUntil(a.data,a.meses)-daysUntil(b.data,b.meses)});
+  var html='';
+  sorted.forEach(function(v){var p=getPet(v.petId),days=daysUntil(v.data,v.meses),s=vStatus(days);html+='<div class="row">'+petAv(p)+'<div class="inf"><div class="nm">'+p.name+' — '+v.tipo+'</div><div class="mt">Aplicada: '+fmtDate(v.data)+' · '+p.dono+(p.wpp?' · ('+p.wpp.slice(0,2)+') '+p.wpp.slice(2,7)+'-'+p.wpp.slice(7):'')+'</div></div><span class="badge '+s.b+'" style="margin-right:6px">'+s.l+'</span>'+(p.wpp?'<button class="btn btnw" onclick="wppLembrete(\''+v.id+'\')" style="padding:5px 10px;margin-right:4px" title="Enviar lembrete pelo WhatsApp">💬</button>':'')+'<button class="btn btnr" onclick="delVacc(\''+v.id+'\')" style="padding:5px 10px">🗑</button></div>'});
+  document.getElementById('vlist').innerHTML=html;
+}
+
+function renderHist(){
+  var items=[];
+  ags.forEach(function(a){var p=getPet(a.petId);items.push({date:a.data,hora:a.hora,txt:a.tipo+' — '+p.name,sub:'Dono: '+p.dono+' · '+fmtMoney(a.val)+' · '+a.status,type:'banho'})});
+  vaccs.forEach(function(v){var p=getPet(v.petId);items.push({date:v.data,hora:'00:00',txt:'💉 Vacina '+v.tipo+' — '+p.name,sub:'Dono: '+p.dono+' · Válida por '+v.meses+' meses',type:'vacc'})});
+  items.sort(function(a,b){return (b.date+b.hora).localeCompare(a.date+a.hora)});
+  if(ht!=='all')items=items.filter(function(i){return i.type===ht});
+  if(!items.length){document.getElementById('hlist').innerHTML='<div class="card"><div class="empty">📋 Nenhum registro ainda</div></div>';return}
+  var html='<div class="card">';
+  items.forEach(function(i){html+='<div class="row"><div class="inf"><div class="nm">'+i.txt+'</div><div class="mt">📅 '+fmtDate(i.date)+' · '+i.sub+'</div></div></div>'});
+  html+='</div>';
+  document.getElementById('hlist').innerHTML=html;
+}
+
+function setHT(t,btn){ht=t;document.querySelectorAll('#hist .tab').forEach(function(b){b.classList.remove('on')});btn.classList.add('on');renderHist()}
+function savePet(){var name=document.getElementById('mpet-name').value.trim(),dono=document.getElementById('mpet-dono').value.trim();if(!name||!dono){showToast('Nome e dono são obrigatórios');return}var id=document.getElementById('mpet-id').value||uid(),idx=pets.findIndex(function(p){return p.id===id}),pet={id:id,name:name,raca:document.getElementById('mpet-raca').value.trim(),esp:document.getElementById('mpet-esp').value,idade:parseInt(document.getElementById('mpet-idade').value)||0,dono:dono,wpp:document.getElementById('mpet-wpp').value.trim().replace(/\D/g,''),obs:document.getElementById('mpet-obs').value.trim()};if(idx>=0)pets[idx]=pet;else pets.unshift(pet);DB.save('pets',pets);closeModal('m-pet');clearPF();renderPets();renderDash();showToast(idx>=0?'Pet atualizado!':'Pet cadastrado! 🐾')}
+function clearPF(){['mpet-id','mpet-name','mpet-raca','mpet-idade','mpet-dono','mpet-wpp','mpet-obs'].forEach(function(id){document.getElementById(id).value=''});document.getElementById('mpet-esp').value='cachorro';document.getElementById('mpet-title').textContent='Cadastrar pet'}
+function editPet(id){var p=getPet(id);document.getElementById('mpet-id').value=p.id;document.getElementById('mpet-name').value=p.name;document.getElementById('mpet-raca').value=p.raca||'';document.getElementById('mpet-esp').value=p.esp||'cachorro';document.getElementById('mpet-idade').value=p.idade||'';document.getElementById('mpet-dono').value=p.dono;document.getElementById('mpet-wpp').value=p.wpp||'';document.getElementById('mpet-obs').value=p.obs||'';document.getElementById('mpet-title').textContent='Editar pet';openModal('m-pet')}
+function delPet(id){if(!confirm('Apagar este pet e todos os seus dados?'))return;pets=pets.filter(function(p){return p.id!==id});vaccs=vaccs.filter(function(v){return v.petId!==id});ags=ags.filter(function(a){return a.petId!==id});DB.save('pets',pets);DB.save('vaccs',vaccs);DB.save('ags',ags);renderPets();renderDash();showToast('Pet removido.')}
+function saveAg(){var petId=document.getElementById('mag-pet').value,tipo=document.getElementById('mag-tipo').value,data=document.getElementById('mag-data').value,hora=document.getElementById('mag-hora').value;if(!petId||!data||!hora){showToast('Preencha os campos obrigatórios');return}ags.unshift({id:uid(),petId:petId,tipo:tipo,val:document.getElementById('mag-val').value||0,data:data,hora:hora,status:document.getElementById('mag-status').value});DB.save('ags',ags);closeModal('m-ag');renderAg();renderDash();showToast('Agendamento salvo! 📅')}
+function delAg(id){if(!confirm('Remover este agendamento?'))return;ags=ags.filter(function(a){return a.id!==id});DB.save('ags',ags);renderAg();renderDash();showToast('Removido.')}
+function saveVacc(){var petId=document.getElementById('mv-pet').value,tipo=document.getElementById('mv-tipo').value,data=document.getElementById('mv-data').value,meses=document.getElementById('mv-val').value||12;if(!petId||!data){showToast('Preencha os campos obrigatórios');return}vaccs.unshift({id:uid(),petId:petId,tipo:tipo,data:data,meses:parseInt(meses)});DB.save('vaccs',vaccs);closeModal('m-vacc');renderVacc();renderDash();showToast('Vacina registrada! 💉')}
+function delVacc(id){if(!confirm('Remover esta vacina?'))return;vaccs=vaccs.filter(function(v){return v.id!==id});DB.save('vaccs',vaccs);renderVacc();renderDash();showToast('Removida.')}
+function wppLembrete(vaccId){var v=vaccs.find(function(x){return x.id===vaccId});if(!v)return;var p=getPet(v.petId),days=daysUntil(v.data,v.meses),msg=cfg.msg.replace('{dono}',p.dono).replace('{pet}',p.name).replace('{vacina}',v.tipo).replace('{dias}',days<0?'VENCIDA há '+Math.abs(days)+' dias':days);currentWpp={phone:p.wpp,msg:msg};document.getElementById('wpp-preview').textContent=msg;openModal('m-wpp')}
+function doWpp(){var phone=currentWpp.phone.replace(/\D/g,'');if(!phone){showToast('Pet sem WhatsApp cadastrado');closeModal('m-wpp');return}window.open('https://wa.me/55'+phone+'?text='+encodeURIComponent(currentWpp.msg),'_blank');closeModal('m-wpp');showToast('WhatsApp aberto! 💬')}
+function loadCfg(){document.getElementById('cfg-name').value=cfg.name;document.getElementById('cfg-wpp').value=cfg.wpp;document.getElementById('cfg-msg').value=cfg.msg}
+function saveCfg(){cfg.name=document.getElementById('cfg-name').value.trim()||'Irmãos Pet';cfg.wpp=document.getElementById('cfg-wpp').value.trim().replace(/\D/g,'');cfg.msg=document.getElementById('cfg-msg').value.trim();DB.save('cfg',cfg);showToast('Configurações salvas! ✓')}
+
+document.getElementById('mag-data').value=today();
+renderDash();
+</script>
+</body>
+</html>
